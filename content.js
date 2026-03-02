@@ -1,4 +1,4 @@
-// content.js
+// content.js — Injects CSS to hide scrollbars, respects whitelist
 (function () {
   const STYLE_ID = 'hide-scrollbar-style';
 
@@ -17,9 +17,28 @@
     }
   };
 
-  // Sync state
-  chrome.storage.local.get({ scrollbarHidden: true }, (res) => applyStyle(res.scrollbarHidden));
+  const isWhitelisted = (whitelist) => {
+    const hostname = window.location.hostname;
+    return whitelist.some(
+      (domain) => hostname === domain || hostname.endsWith('.' + domain)
+    );
+  };
+
+  const update = () => {
+    chrome.storage.local.get(
+      { scrollbarHidden: true, whitelist: [] },
+      (res) => {
+        if (chrome.runtime.lastError) return;
+        applyStyle(res.scrollbarHidden && !isWhitelisted(res.whitelist));
+      }
+    );
+  };
+
+  // Initial check
+  update();
+
+  // React to storage changes in real-time
   chrome.storage.onChanged.addListener((changes) => {
-    if (changes.scrollbarHidden) applyStyle(changes.scrollbarHidden.newValue);
+    if (changes.scrollbarHidden || changes.whitelist) update();
   });
 })();

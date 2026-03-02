@@ -1,24 +1,24 @@
 {
   "manifest_version": 3,
   "name": "Hide Scrollbar",
-  "version": "1.9",
-  "description": "Automatically hides the scrollbar on most websites for a cleaner interface, with a convenient toggle button.",
+  "version": "2.0",
+  "description": "Automatically hides the scrollbar on most websites for a cleaner interface, with toggle and whitelist support.",
   "icons": {
-    "48": "icons/icon48.png"
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "permissions": [
-    "activeTab",
-    "scripting",
-    "storage"
-  ],
-  "host_permissions": [
-    "<all_urls>"
+    "storage",
+    "tabs"
   ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
       "48": "icons/icon48.png"
     }
+  },
+  "background": {
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
