@@ -20,26 +20,26 @@
 
     :root {
       --bg: #ffffff;
-      --text: #1a1a1a;
-      --border: #f0f0f0;
-      --label: #444;
-      --slider-bg: #ccc;
-      --accent: #007aff;
-      --secondary-bg: #f5f5f7;
-      --danger: #ff3b30;
-      --muted: #888;
-      --input-bg: #f0f0f0;
+      --text: #0a0a0a;
+      --border: #d0d0d0;
+      --label: #333;
+      --slider-bg: #b0b0b0;
+      --accent: #0066dd;
+      --secondary-bg: #eaeaec;
+      --danger: #e53528;
+      --muted: #666;
+      --input-bg: #eaeaec;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #232326;
-        --text: #ffffff;
-        --border: #2c2c2e;
-        --label: #ebebf5;
-        --slider-bg: #323234;
-        --secondary-bg: #2c2c2e;
-        --input-bg: #3a3a3c;
+        --bg: #181818;
+        --text: #f0f0f0;
+        --border: #444;
+        --label: #ddd;
+        --slider-bg: #444;
+        --secondary-bg: #262626;
+        --input-bg: #262626;
       }
     }
 
@@ -103,7 +103,7 @@
       right: 0;
       bottom: 0;
       background: var(--slider-bg);
-      border-radius: 20px;
+      border-radius: 0;
       cursor: pointer;
       transition: .2s;
     }
@@ -111,12 +111,12 @@
     .slider:before {
       position: absolute;
       content: "";
-      height: 16px;
-      width: 16px;
-      left: 2px;
-      bottom: 2px;
+      height: 12px;
+      width: 12px;
+      left: 4px;
+      bottom: 4px;
       background: white;
-      border-radius: 50%;
+      border-radius: 0;
       transition: .2s;
     }
 
