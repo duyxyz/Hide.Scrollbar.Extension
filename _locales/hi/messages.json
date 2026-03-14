@@ -16,6 +16,9 @@
     "cantAddPage": {
         "message": "अमान्य पृष्ठ"
     },
+    "exceptionsTitle": {
+        "message": "अपवाद"
+    },
     "domainPlaceholder": {
         "message": "example.com"
     },

@@ -16,6 +16,9 @@
     "cantAddPage": {
         "message": "页面无效"
     },
+    "exceptionsTitle": {
+        "message": "例外列表"
+    },
     "domainPlaceholder": {
         "message": "example.com"
     },

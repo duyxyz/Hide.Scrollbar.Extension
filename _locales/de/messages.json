@@ -16,6 +16,9 @@
     "cantAddPage": {
         "message": "Ungültige Seite"
     },
+    "exceptionsTitle": {
+        "message": "Ausnahmen"
+    },
     "domainPlaceholder": {
         "message": "beispiel.de"
     },

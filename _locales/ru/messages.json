@@ -16,6 +16,9 @@
     "cantAddPage": {
         "message": "Ошибка страницы"
     },
+    "exceptionsTitle": {
+        "message": "Исключения"
+    },
     "domainPlaceholder": {
         "message": "example.com"
     },

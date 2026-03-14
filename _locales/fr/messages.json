@@ -16,6 +16,9 @@
     "cantAddPage": {
         "message": "Page invalide"
     },
+    "exceptionsTitle": {
+        "message": "Exceptions"
+    },
     "domainPlaceholder": {
         "message": "exemple.com"
     },

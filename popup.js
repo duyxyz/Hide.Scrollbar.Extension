@@ -116,19 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/^(https?:\/\/)?(www\.)?/, '')
       .replace(/\/.*$/, '');
 
-  const saveWhitelistFromTextarea = () => {
-    const rawText = whitelistTextarea.value;
-    const domains = rawText.split('\n')
-      .map(sanitizeDomain)
-      .filter(d => d);
 
-    const uniqueDomains = [...new Set(domains)].sort();
-
-    chrome.storage.sync.set({ whitelist: uniqueDomains }, () => {
-      if (chrome.runtime.lastError) return;
-      updateNotice(uniqueDomains);
-    });
-  };
 
   const addDomain = (raw) => {
     const domain = sanitizeDomain(raw);

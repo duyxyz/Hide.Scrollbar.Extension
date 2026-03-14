@@ -16,6 +16,9 @@
     "cantAddPage": {
         "message": "หน้าเว็บไม่ถูกต้อง"
     },
+    "exceptionsTitle": {
+        "message": "ข้อยกเว้น"
+    },
     "domainPlaceholder": {
         "message": "example.com"
     },

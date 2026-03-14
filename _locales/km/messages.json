@@ -16,6 +16,9 @@
     "cantAddPage": {
         "message": "ទំព័រមិនត្រឹមត្រូវ"
     },
+    "exceptionsTitle": {
+        "message": "ការលើកលែង"
+    },
     "domainPlaceholder": {
         "message": "example.com"
     },

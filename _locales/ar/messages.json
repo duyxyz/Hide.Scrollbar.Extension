@@ -16,6 +16,9 @@
     "cantAddPage": {
         "message": "صفحة غير صالحة"
     },
+    "exceptionsTitle": {
+        "message": "الاستثناءات"
+    },
     "domainPlaceholder": {
         "message": "example.com"
     },

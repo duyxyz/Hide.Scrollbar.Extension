@@ -16,6 +16,9 @@
     "cantAddPage": {
         "message": "잘못된 페이지"
     },
+    "exceptionsTitle": {
+        "message": "예외 목록"
+    },
     "domainPlaceholder": {
         "message": "example.com"
     },

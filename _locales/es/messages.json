@@ -16,6 +16,9 @@
     "cantAddPage": {
         "message": "Página no válida"
     },
+    "exceptionsTitle": {
+        "message": "Excepciones"
+    },
     "domainPlaceholder": {
         "message": "ejemplo.com"
     },

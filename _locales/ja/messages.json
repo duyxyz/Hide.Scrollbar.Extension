@@ -16,6 +16,9 @@
     "cantAddPage": {
         "message": "無効なページ"
     },
+    "exceptionsTitle": {
+        "message": "例外リスト"
+    },
     "domainPlaceholder": {
         "message": "example.com"
     },

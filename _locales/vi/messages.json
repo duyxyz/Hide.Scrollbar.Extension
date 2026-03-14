@@ -16,6 +16,9 @@
     "cantAddPage": {
         "message": "Trang không hợp lệ"
     },
+    "exceptionsTitle": {
+        "message": "Danh sách ngoại lệ"
+    },
     "domainPlaceholder": {
         "message": "vidu.com"
     },
