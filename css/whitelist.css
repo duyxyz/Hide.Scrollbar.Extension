@@ -32,11 +32,6 @@
     transition: all .2s;
 }
 
-.add-current-btn:hover {
-    border-color: var(--accent);
-    background: var(--accent);
-    color: #ffffff;
-}
 
 .add-current-btn:disabled {
     opacity: 0.5;
