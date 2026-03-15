@@ -7,28 +7,25 @@
         "message": "よりクリーンなインターフェイスのために、ほとんどのウェブサイトのスクロールバーを自動的に非表示にします。",
         "description": "Description of the extension"
     },
-    "title": {
-        "message": "スクロールバーが嫌い"
-    },
     "restrictedNotice": {
-        "message": "拡張機能はこのページでは機能しません"
+        "message": "制限されたページ"
     },
     "whitelistedNotice": {
-        "message": "このサイトは例外リストにあります"
-    },
-    "exceptionsTitle": {
-        "message": "例外"
-    },
-    "addCurrentSite": {
-        "message": "現在のサイトを追加"
-    },
-    "alreadyInList": {
-        "message": "すでに例外リストにあります"
+        "message": "例外リスト"
     },
     "cantAddPage": {
-        "message": "このページを追加できません"
+        "message": "無効なページ"
     },
     "domainPlaceholder": {
-        "message": "www.example.com"
+        "message": "example.com"
+    },
+    "saving": {
+        "message": "保存中..."
+    },
+    "saved": {
+        "message": "保存済み"
+    },
+    "error": {
+        "message": "エラー"
     }
 }

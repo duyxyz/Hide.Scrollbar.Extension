@@ -7,28 +7,25 @@
         "message": "自动隐藏大多数网站上的滚动条，提供更干净的界面。支持切换和白名单。",
         "description": "Description of the extension"
     },
-    "title": {
-        "message": "我不喜欢滚动条"
-    },
     "restrictedNotice": {
-        "message": "该扩展程序无法在此页面上运行"
+        "message": "受限页面"
     },
     "whitelistedNotice": {
-        "message": "该网站在例外列表中"
-    },
-    "exceptionsTitle": {
-        "message": "例外"
-    },
-    "addCurrentSite": {
-        "message": "添加当前网站"
-    },
-    "alreadyInList": {
-        "message": "已在例外列表中"
+        "message": "例外列表"
     },
     "cantAddPage": {
-        "message": "无法添加此页面"
+        "message": "页面无效"
     },
     "domainPlaceholder": {
-        "message": "www.example.com"
+        "message": "example.com"
+    },
+    "saving": {
+        "message": "正在保存..."
+    },
+    "saved": {
+        "message": "已保存"
+    },
+    "error": {
+        "message": "错误"
     }
 }

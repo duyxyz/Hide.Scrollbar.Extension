@@ -2,10 +2,14 @@
 document.addEventListener('DOMContentLoaded', () => {
   const toggle = document.getElementById('toggleScroll');
   const addCurrentBtn = document.getElementById('addCurrentBtn');
-  const whitelistTextarea = document.getElementById('whitelistTextarea');
   const whitelistedNotice = document.getElementById('whitelistedNotice');
   const restrictedNotice = document.getElementById('restrictedNotice');
-  const exceptionCount = document.getElementById('exceptionCount');
+  
+  const toggleWhitelist = document.getElementById('toggleWhitelist');
+  const domainDisplay = document.getElementById('domainDisplay');
+  const exportBtn = document.getElementById('exportBtn');
+  const importBtn = document.getElementById('importBtn');
+  const importFile = document.getElementById('importFile');
 
   let currentHostname = '';
   let isRestricted = false;
@@ -25,11 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const applyRestrictedState = () => {
+    toggle.classList.remove('active');
     toggle.disabled = true;
-    toggle.parentElement.style.opacity = '0.4';
-    toggle.parentElement.style.pointerEvents = 'none';
+    toggle.style.opacity = '0.4';
+    toggle.style.pointerEvents = 'none';
     restrictedNotice.style.display = 'block';
-    addCurrentBtn.style.display = 'none';
+    
+    // Disable all bottom controls
+    addCurrentBtn.disabled = true;
   };
 
   // --- Helpers -----------------------------------------------------------
@@ -39,33 +46,46 @@ document.addEventListener('DOMContentLoaded', () => {
       (d) => currentHostname === d || currentHostname.endsWith('.' + d)
     );
 
-  const renderWhitelist = (whitelist) => {
-    exceptionCount.textContent = whitelist.length === 0 ? 'none' : whitelist.length;
-    whitelistTextarea.value = whitelist.join('\n');
-  };
-
   const updateNotice = (whitelist) => {
     if (!currentHostname) {
       whitelistedNotice.style.display = 'none';
+      domainDisplay.textContent = chrome.i18n.getMessage("cantAddPage") || 'Invalid Page';
       addCurrentBtn.disabled = true;
-      addCurrentBtn.textContent = chrome.i18n.getMessage("cantAddPage");
       return;
     }
+
+    domainDisplay.textContent = currentHostname;
 
     const inList = isWhitelisted(whitelist);
     whitelistedNotice.style.display = inList ? 'block' : 'none';
 
-    // Disable toggle when current site is whitelisted
-    toggle.disabled = inList;
-    toggle.parentElement.style.opacity = inList ? '0.4' : '1';
-    toggle.parentElement.style.pointerEvents = inList ? 'none' : 'auto';
+    // Disable toggle when current site is whitelisted OR restricted
+    if (inList || isRestricted) {
+      toggle.classList.remove('active');
+      toggle.disabled = true;
+      toggle.style.opacity = '0.4';
+      toggle.style.pointerEvents = 'none';
+    } else {
+      // Restore state from storage for non-whitelisted/non-restricted sites
+      chrome.storage.sync.get({ scrollbarHidden: true }, (data) => {
+        // Redundant check for safety
+        if (isRestricted) return; 
+
+        if (data.scrollbarHidden) {
+          toggle.classList.add('active');
+        } else {
+          toggle.classList.remove('active');
+        }
+        toggle.disabled = false;
+        toggle.style.opacity = '1';
+        toggle.style.pointerEvents = 'auto';
+      });
+    }
 
     if (inList) {
       addCurrentBtn.disabled = true;
-      addCurrentBtn.textContent = chrome.i18n.getMessage("alreadyInList");
     } else {
       addCurrentBtn.disabled = false;
-      addCurrentBtn.textContent = currentHostname;
     }
   };
 
@@ -74,8 +94,14 @@ document.addEventListener('DOMContentLoaded', () => {
       { scrollbarHidden: true, whitelist: [] },
       (data) => {
         if (chrome.runtime.lastError) return;
-        toggle.checked = data.scrollbarHidden;
-        renderWhitelist(data.whitelist);
+        
+        // Only set active if NOT restricted
+        if (!isRestricted && data.scrollbarHidden) {
+          toggle.classList.add('active');
+        } else {
+          toggle.classList.remove('active');
+        }
+        
         updateNotice(data.whitelist);
       }
     );
@@ -101,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.sync.set({ whitelist: uniqueDomains }, () => {
       if (chrome.runtime.lastError) return;
       updateNotice(uniqueDomains);
-      exceptionCount.textContent = uniqueDomains.length === 0 ? 'none' : uniqueDomains.length;
     });
   };
 
@@ -113,7 +138,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (data.whitelist.includes(domain)) return;
       const newList = [...data.whitelist, domain].sort();
       chrome.storage.sync.set({ whitelist: newList }, () => {
-        renderWhitelist(newList);
         updateNotice(newList);
       });
     });
@@ -121,8 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- Event listeners ---------------------------------------------------
 
-  toggle.addEventListener('change', () => {
-    const hidden = toggle.checked;
+  toggle.addEventListener('click', () => {
+    toggle.classList.toggle('active');
+    const hidden = toggle.classList.contains('active');
     chrome.storage.sync.set({ scrollbarHidden: hidden }, () => {
       if (chrome.runtime.lastError) return;
     });
@@ -132,12 +157,58 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentHostname) addDomain(currentHostname);
   });
 
-  let debounceTimeout;
-  whitelistTextarea.addEventListener('input', () => {
-    clearTimeout(debounceTimeout);
-    debounceTimeout = setTimeout(() => {
-      saveWhitelistFromTextarea();
-    }, 500); // Debounce 500ms
+  toggleWhitelist.addEventListener('click', async () => {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tab) {
+      await chrome.sidePanel.open({ tabId: tab.id });
+      window.close();
+    }
+  });
+
+  // --- Export ---
+  exportBtn.addEventListener('click', () => {
+    chrome.storage.sync.get({ scrollbarHidden: true, whitelist: [] }, (data) => {
+      if (chrome.runtime.lastError) return;
+      const json = JSON.stringify(data, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'scrollhide-backup.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  });
+
+  // --- Import ---
+  importBtn.addEventListener('click', () => {
+    importFile.click();
+  });
+
+  importFile.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const data = JSON.parse(event.target.result);
+        if (!data.whitelist || !Array.isArray(data.whitelist)) return;
+
+        chrome.storage.sync.get({ whitelist: [] }, (current) => {
+          const merged = [...new Set([...current.whitelist, ...data.whitelist])].sort();
+          
+          chrome.storage.sync.set({ ...data, whitelist: merged }, () => {
+            if (chrome.runtime.lastError) return;
+            loadState(); // Refresh UI
+          });
+        });
+      } catch (err) {
+        console.error('Invalid JSON');
+      }
+    };
+    reader.readAsText(file);
+    importFile.value = '';
   });
 
   // --- Init --------------------------------------------------------------
@@ -145,12 +216,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Localize UI
   document.querySelectorAll('[data-i18n]').forEach((el) => {
     const msg = chrome.i18n.getMessage(el.getAttribute('data-i18n'));
-    if (msg) el.textContent = msg;
+    if (msg) {
+      if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
+        el.placeholder = msg;
+      } else {
+        el.textContent = msg;
+      }
+    }
   });
-  const textarea = document.getElementById('whitelistTextarea');
-  if (textarea) {
-    textarea.placeholder = chrome.i18n.getMessage("domainPlaceholder");
-  }
 
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const tabUrl = tabs[0]?.url || '';

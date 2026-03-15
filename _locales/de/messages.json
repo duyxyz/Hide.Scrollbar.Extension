@@ -7,28 +7,25 @@
         "message": "Blendet die Bildlaufleiste auf den meisten Websites für eine sauberere Benutzeroberfläche automatisch aus.",
         "description": "Description of the extension"
     },
-    "title": {
-        "message": "Ich mag keine Bildlaufleisten"
-    },
     "restrictedNotice": {
-        "message": "Die Erweiterung funktioniert auf dieser Seite nicht"
+        "message": "Eingeschränkt"
     },
     "whitelistedNotice": {
-        "message": "Diese Seite ist in der Ausnahmeliste"
-    },
-    "exceptionsTitle": {
-        "message": "Ausnahmen"
-    },
-    "addCurrentSite": {
-        "message": "Aktuelle Seite hinzufügen"
-    },
-    "alreadyInList": {
-        "message": "Bereits in der Ausnahmeliste"
+        "message": "Ausnahmeliste"
     },
     "cantAddPage": {
-        "message": "Diese Seite kann nicht hinzugefügt werden"
+        "message": "Ungültige Seite"
     },
     "domainPlaceholder": {
-        "message": "www.beispiel.de"
+        "message": "beispiel.de"
+    },
+    "saving": {
+        "message": "Speichern..."
+    },
+    "saved": {
+        "message": "Gespeichert"
+    },
+    "error": {
+        "message": "Fehler"
     }
 }

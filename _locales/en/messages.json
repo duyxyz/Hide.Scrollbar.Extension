@@ -7,28 +7,25 @@
         "message": "Automatically hides the scrollbar on most websites for a cleaner interface, with toggle and whitelist support.",
         "description": "Description of the extension"
     },
-    "title": {
-        "message": "I don't like scrollbar"
-    },
     "restrictedNotice": {
-        "message": "Extension can't work on this page"
+        "message": "Restricted page"
     },
     "whitelistedNotice": {
-        "message": "This site is in the exception list"
-    },
-    "exceptionsTitle": {
-        "message": "Exceptions"
-    },
-    "addCurrentSite": {
-        "message": "Add current site"
-    },
-    "alreadyInList": {
-        "message": "Already in exception list"
+        "message": "In exception list"
     },
     "cantAddPage": {
-        "message": "Can't add this page"
+        "message": "Invalid page"
     },
     "domainPlaceholder": {
-        "message": "www.example.com"
+        "message": "example.com"
+    },
+    "saving": {
+        "message": "Saving..."
+    },
+    "saved": {
+        "message": "Saved"
+    },
+    "error": {
+        "message": "Error"
     }
 }

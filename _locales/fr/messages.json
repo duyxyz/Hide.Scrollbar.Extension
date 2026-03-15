@@ -7,28 +7,25 @@
         "message": "Masque automatiquement la barre de défilement sur la plupart des sites Web pour une interface plus épurée.",
         "description": "Description of the extension"
     },
-    "title": {
-        "message": "Je n'aime pas les barres de défilement"
-    },
     "restrictedNotice": {
-        "message": "L'extension ne peut pas fonctionner sur cette page"
+        "message": "Page restreinte"
     },
     "whitelistedNotice": {
-        "message": "Ce site est dans la liste d'exceptions"
-    },
-    "exceptionsTitle": {
-        "message": "Exceptions"
-    },
-    "addCurrentSite": {
-        "message": "Ajouter le site actuel"
-    },
-    "alreadyInList": {
-        "message": "Déjà dans la liste d'exceptions"
+        "message": "Liste d'exceptions"
     },
     "cantAddPage": {
-        "message": "Impossible d'ajouter cette page"
+        "message": "Page invalide"
     },
     "domainPlaceholder": {
-        "message": "www.exemple.com"
+        "message": "exemple.com"
+    },
+    "saving": {
+        "message": "Enregistrement..."
+    },
+    "saved": {
+        "message": "Enregistré"
+    },
+    "error": {
+        "message": "Erreur"
     }
 }

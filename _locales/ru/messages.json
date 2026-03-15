@@ -7,28 +7,25 @@
         "message": "Автоматически скрывает полосу прокрутки на большинстве веб-сайтов для более чистого интерфейса.",
         "description": "Description of the extension"
     },
-    "title": {
-        "message": "Мне не нравится полоса прокрутки"
-    },
     "restrictedNotice": {
-        "message": "Расширение не работает на этой странице"
+        "message": "Ограничено"
     },
     "whitelistedNotice": {
-        "message": "Этот сайт в списке исключений"
-    },
-    "exceptionsTitle": {
-        "message": "Исключения"
-    },
-    "addCurrentSite": {
-        "message": "Добавить текущий сайт"
-    },
-    "alreadyInList": {
-        "message": "Уже в списке исключений"
+        "message": "В исключениях"
     },
     "cantAddPage": {
-        "message": "Невозможно добавить эту страницу"
+        "message": "Ошибка страницы"
     },
     "domainPlaceholder": {
-        "message": "www.example.com"
+        "message": "example.com"
+    },
+    "saving": {
+        "message": "Сохранение..."
+    },
+    "saved": {
+        "message": "Сохранено"
+    },
+    "error": {
+        "message": "Ошибка"
     }
 }

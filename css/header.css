@@ -1,23 +1,75 @@
-.header {
+/* Top Bar (Domain Name) */
+.top-bar {
+    text-align: center;
+    padding: 10px;
+    background: var(--secondary-bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 44px;
+}
+
+.domain-display {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    word-break: break-all;
+    line-height: normal;
+}
+
+/* Big Power Button Section */
+.main-power-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    padding: 10px 0;
+    position: relative;
+    overflow: hidden;
+    min-height: 140px;
+}
+
+.power-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 0;
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border);
+    justify-content: center;
 }
 
-.header img {
-    width: 24px;
-    height: 24px;
-    border-radius: 0;
+.power-btn.active {
+    color: #2772ed;
 }
 
-.header h1 {
-    font-size: 16px;
-    margin: 0;
-    font-weight: 600;
+/* Bottom Controls */
+.bottom-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    background: var(--secondary-bg);
+    height: 44px;
 }
 
-.header .switch {
-    margin-left: auto;
+.control-btn {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    padding: 2px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.control-btn.active {
+    color: var(--accent);
+}
+
+.control-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
 }

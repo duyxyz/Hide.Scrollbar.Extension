@@ -7,28 +7,25 @@
         "message": "Tự động ẩn thanh cuộn trên hầu hết các trang web để có giao diện gọn gàng hơn. Bao gồm nút bật/tắt và danh sách ngoại lệ.",
         "description": "Description of the extension"
     },
-    "title": {
-        "message": "Mình ghét thanh cuộn"
-    },
     "restrictedNotice": {
-        "message": "Tiện ích không hoạt động trên trang này"
+        "message": "Trang bị giới hạn"
     },
     "whitelistedNotice": {
-        "message": "Trang web này nằm trong danh sách ngoại lệ"
-    },
-    "exceptionsTitle": {
-        "message": "Ngoại lệ"
-    },
-    "addCurrentSite": {
-        "message": "Thêm trang hiện tại"
-    },
-    "alreadyInList": {
-        "message": "Đã có trong danh sách ngoại lệ"
+        "message": "Trang trong ngoại lệ"
     },
     "cantAddPage": {
-        "message": "Không thể thêm trang này"
+        "message": "Trang không hợp lệ"
     },
     "domainPlaceholder": {
-        "message": "www.vidu.com"
+        "message": "vidu.com"
+    },
+    "saving": {
+        "message": "Đang lưu..."
+    },
+    "saved": {
+        "message": "Đã lưu"
+    },
+    "error": {
+        "message": "Lỗi"
     }
 }

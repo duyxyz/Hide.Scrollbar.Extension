@@ -7,28 +7,25 @@
         "message": "إخفاء شريط التمرير تلقائيًا في معظم مواقع الويب للحصول على واجهة أنظف.",
         "description": "Description of the extension"
     },
-    "title": {
-        "message": "أنا لا أحب شريط التمرير"
-    },
     "restrictedNotice": {
-        "message": "لا يمكن للإضافة العمل في هذه الصفحة"
+        "message": "صفحة مقيدة"
     },
     "whitelistedNotice": {
-        "message": "هذا الموقع في قائمة الاستثناءات"
-    },
-    "exceptionsTitle": {
-        "message": "الاستثناءات"
-    },
-    "addCurrentSite": {
-        "message": "إضافة الموقع الحالي"
-    },
-    "alreadyInList": {
-        "message": "موجود بالفعل في قائمة الاستثناءات"
+        "message": "قائمة الاستثناءات"
     },
     "cantAddPage": {
-        "message": "لا يمكن إضافة هذه الصفحة"
+        "message": "صفحة غير صالحة"
     },
     "domainPlaceholder": {
-        "message": "www.example.com"
+        "message": "example.com"
+    },
+    "saving": {
+        "message": "جاري الحفظ..."
+    },
+    "saved": {
+        "message": "تم الحفظ"
+    },
+    "error": {
+        "message": "خطأ"
     }
 }
