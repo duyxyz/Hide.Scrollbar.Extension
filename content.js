@@ -10,6 +10,7 @@
       style.textContent = `
         ::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
         * { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+        div[data-visualcompletion="ignore"][data-thumb="1"] { display: none !important; visibility: hidden !important; opacity: 0 !important; width: 0 !important; }
       `;
       (document.head || document.documentElement).appendChild(style);
     } else if (!hide && style) {
