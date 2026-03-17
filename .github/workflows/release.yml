@@ -48,7 +48,7 @@ jobs:
           
           # --- BUILD FIREFOX VERSION ---
           # Xoá các định dạng của Chrome
-          jq 'del(.side_panel, .background.service_worker) | .permissions -= ["sidePanel"] | .browser_specific_settings.gecko.data_collection_permissions = []' manifest.orig.json > manifest.json
+          jq 'del(.side_panel, .background.service_worker) | .permissions -= ["sidePanel"] | .browser_specific_settings.gecko.data_collection_permissions = {}' manifest.orig.json > manifest.json
           
           # Resize Firefox icons correctly using system mogrify
           mogrify -resize 48x48 icons/icon48.png
