@@ -45,8 +45,16 @@ jobs:
           
           # --- BUILD FIREFOX VERSION ---
           # Xoá các định dạng của Chrome
-          jq 'del(.side_panel, .background.service_worker)' manifest.orig.json > manifest.json
+          jq 'del(.side_panel, .background.service_worker) | .permissions -= ["sidePanel"] | .browser_specific_settings.gecko.data_collection_permissions = []' manifest.orig.json > manifest.json
+          
+          # Resize Firefox icons correctly using system mogrify
+          mogrify -resize 48x48 icons/icon48.png
+          mogrify -resize 128x128 icons/icon128.png
+          
           zip -r extension-firefox-v${{ env.VERSION }}.zip . -x "*.git*" "*.github*" "*.vscode*" "*.hintrc" "README.md" "manifest.orig.json" "tmp.json" "build.ps1" "dist/*"
+          
+          # Khôi phục các file cục bộ
+          git checkout icons/icon48.png icons/icon128.png
           
           # Khôi phục manifest.json gốc
           mv manifest.orig.json manifest.json

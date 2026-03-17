@@ -152,9 +152,9 @@ document.addEventListener('DOMContentLoaded', () => {
   toggleWhitelist.addEventListener('click', async () => {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (tab) {
-      if (chrome.sidePanel && chrome.sidePanel.open) {
+      if (chrome['sidePanel'] && chrome['sidePanel']['open']) {
         // Chromium
-        await chrome.sidePanel.open({ tabId: tab.id });
+        await chrome['sidePanel']['open']({ tabId: tab.id });
       } else if (typeof browser !== 'undefined' && browser.sidebarAction && browser.sidebarAction.open) {
         // Firefox
         await browser.sidebarAction.open();
