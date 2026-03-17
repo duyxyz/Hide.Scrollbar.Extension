@@ -16,7 +16,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Update manifest version
+      - name: Update manifest versions
         id: version
         run: |
           # Dùng jq để lấy phiên bản gốc và thêm số hiệu của GitHub Action run
@@ -24,43 +24,33 @@ jobs:
           NEW_VERSION="${BASE_VERSION}.${{ github.run_number }}"
           echo "Updating version from $BASE_VERSION to $NEW_VERSION"
           
-          # Cập nhật manifest.json 
+          # Cập nhật manifest.json (Chrome)
           jq ".version = \"$NEW_VERSION\"" manifest.json > tmp.json && mv tmp.json manifest.json
+          
+          # Cập nhật manifest.firefox.json (Firefox)
+          jq ".version = \"$NEW_VERSION\"" manifest.firefox.json > tmp.json && mv tmp.json manifest.firefox.json
           
           # Lưu version vào biến môi trường để dùng cho bước sau
           echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
-          
-          # Cập nhật file cục bộ trong worker (chỉ phục vụ cho việc nén zip)
-          # Lưu ý: Nó không push ngược code này lại kho Github để tránh conflict
       
       - name: Install ImageMagick
         run: sudo apt-get update && sudo apt-get install -y imagemagick
 
       - name: Create Zip Archives
         run: |
-          # Sao lưu manifest.json gốc
-          cp manifest.json manifest.orig.json
-          
           # --- BUILD CHROME VERSION ---
-          # Xoá các định dạng của Firefox
-          jq 'del(.browser_specific_settings, .sidebar_action, .background.scripts)' manifest.orig.json > manifest.json
-          zip -r extension-chrome-v${{ env.VERSION }}.zip . -x "*.git*" "*.github*" "*.vscode*" "*.hintrc" "README.md" "manifest.orig.json" "tmp.json" "build.ps1" "dist/*"
+          # Nén tất cả thành 1 file zip, ngoại trừ manifest của Firefox
+          zip -r extension-chrome-v${{ env.VERSION }}.zip . -x "*.git*" "*.github*" "*.vscode*" "*.hintrc" "README.md" "manifest.firefox.json" "tmp.json" "build.ps1"
           
           # --- BUILD FIREFOX VERSION ---
-          # Xoá các định dạng của Chrome
-          jq 'del(.side_panel, .background.service_worker) | .permissions -= ["sidePanel"] | .browser_specific_settings.gecko.data_collection_permissions = {}' manifest.orig.json > manifest.json
+          # Đổi tên manifest.firefox.json thành manifest.json chuẩn cho Add-on
+          mv manifest.firefox.json manifest.json
           
           # Resize Firefox icons correctly using system mogrify
           mogrify -resize 48x48 icons/icon48.png
           mogrify -resize 128x128 icons/icon128.png
           
-          zip -r extension-firefox-v${{ env.VERSION }}.zip . -x "*.git*" "*.github*" "*.vscode*" "*.hintrc" "README.md" "manifest.orig.json" "tmp.json" "build.ps1" "dist/*"
-          
-          # Khôi phục các file cục bộ
-          git checkout icons/icon48.png icons/icon128.png
-          
-          # Khôi phục manifest.json gốc
-          mv manifest.orig.json manifest.json
+          zip -r extension-firefox-v${{ env.VERSION }}.zip . -x "*.git*" "*.github*" "*.vscode*" "*.hintrc" "README.md" "manifest.firefox.json" "tmp.json" "build.ps1"
           
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
