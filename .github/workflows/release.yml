@@ -33,9 +33,6 @@ jobs:
           # Lưu version vào biến môi trường để dùng cho bước sau
           echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
       
-      - name: Install ImageMagick
-        run: sudo apt-get update && sudo apt-get install -y imagemagick
-
       - name: Create Zip Archives
         run: |
           # --- BUILD CHROME VERSION ---
@@ -51,10 +48,6 @@ jobs:
           
           # Đổi tên manifest.firefox.json thành manifest.json chuẩn cho Add-on
           mv manifest.firefox.json manifest.json
-          
-          # Resize Firefox icons correctly using system mogrify
-          mogrify -resize 48x48 icons/icon48.png
-          mogrify -resize 128x128 icons/icon128.png
           
           zip -r extension-firefox-v${{ env.VERSION }}.zip . -x "*.git*" "*.github*" "*.vscode*" "*.hintrc" "README.md" "manifest.chromium.json" "tmp.json" "build.ps1"
           
