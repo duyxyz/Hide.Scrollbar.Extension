@@ -1,4 +1,3 @@
 
-
-A simple Chrome extension that hides scrollbars on most websites for a cleaner look. Includes a popup interface to easily toggle the functionality.
-
+<img width="219" height="225" alt="image" src="https://github.com/user-attachments/assets/53c6e333-f4b6-4c36-95f8-6776dd5b5de1" />
+<img width="219" height="225" alt="image" src="https://github.com/user-attachments/assets/129af3bb-7fe4-4877-bd0d-e31d8d02a830" />
