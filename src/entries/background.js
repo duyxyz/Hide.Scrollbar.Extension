@@ -1,75 +1,69 @@
-// background.js — Service Worker: Badge icon management
-const RESTRICTED = ['chrome:', 'chrome-extension:', 'edge:', 'about:', 'view-source:', 'devtools:'];
-const RESTRICTED_HOSTS = ['chrome.google.com', 'chromewebstore.google.com'];
+if (typeof importScripts === 'function') {
+  importScripts(
+    '../shared/constants.js',
+    '../shared/storage.js',
+    '../features/whitelist/whitelist-service.js'
+  );
+}
+
+const { BADGE_ACTIVE_COLOR, BADGE_INACTIVE_COLOR } = globalThis.ScrollHideConstants;
+const { getSyncState, syncLocalCache } = globalThis.ScrollHideStorage;
+const { isRestrictedUrl, isWhitelisted } = globalThis.ScrollHideWhitelist;
 
 const updateBadge = async (tabId, scrollbarHidden, whitelist) => {
-    let isWhitelisted = false;
-    let restricted = false;
+  let restricted = false;
+  let whitelisted = false;
 
-    try {
-        const tab = await chrome.tabs.get(tabId);
-        if (tab.url) {
-            const parsed = new URL(tab.url);
-            if (RESTRICTED.includes(parsed.protocol) || RESTRICTED_HOSTS.includes(parsed.hostname)) {
-                restricted = true;
-            } else {
-                const hostname = parsed.hostname;
-                isWhitelisted = whitelist.some(
-                    (d) => hostname === d || hostname.endsWith('.' + d)
-                );
-            }
-        }
-    } catch (_) {
-        restricted = true;
+  try {
+    const tab = await chrome.tabs.get(tabId);
+    if (tab.url) {
+      restricted = isRestrictedUrl(tab.url);
+      if (!restricted) {
+        whitelisted = isWhitelisted(new URL(tab.url).hostname, whitelist);
+      }
     }
+  } catch (_) {
+    restricted = true;
+  }
 
-    if (restricted) {
-        chrome.action.setBadgeText({ text: '', tabId });
-        return;
-    }
+  if (restricted) {
+    chrome.action.setBadgeText({ text: '', tabId });
+    return;
+  }
 
-    const active = scrollbarHidden && !isWhitelisted;
-    chrome.action.setBadgeText({ text: active ? 'ON' : 'OFF', tabId });
-    chrome.action.setBadgeBackgroundColor({
-        color: active ? '#007aff' : '#888',
-        tabId,
-    });
+  const active = scrollbarHidden && !whitelisted;
+  chrome.action.setBadgeText({ text: active ? 'ON' : 'OFF', tabId });
+  chrome.action.setBadgeBackgroundColor({
+    color: active ? BADGE_ACTIVE_COLOR : BADGE_INACTIVE_COLOR,
+    tabId,
+  });
 };
 
 const updateBadgeForTab = async (tabId) => {
-    const { scrollbarHidden = true, whitelist = [] } =
-        await chrome.storage.sync.get(['scrollbarHidden', 'whitelist']);
-    await updateBadge(tabId, scrollbarHidden, whitelist);
+  const { scrollbarHidden, whitelist } = await getSyncState();
+  await updateBadge(tabId, scrollbarHidden, whitelist);
 };
 
-// Update ALL tabs when the user changes settings or whitelist
 const updateAllTabs = async () => {
-    const { scrollbarHidden = true, whitelist = [] } =
-        await chrome.storage.sync.get(['scrollbarHidden', 'whitelist']);
-    
-    // Sync to local storage for faster content script access
-    await chrome.storage.local.set({ scrollbarHidden, whitelist });
+  const { scrollbarHidden, whitelist } = await getSyncState();
+  await syncLocalCache({ scrollbarHidden, whitelist });
 
-    chrome.tabs.query({}, (tabs) => {
-        tabs.forEach((t) => updateBadge(t.id, scrollbarHidden, whitelist));
-    });
+  chrome.tabs.query({}, (tabs) => {
+    tabs.forEach((tab) => updateBadge(tab.id, scrollbarHidden, whitelist));
+  });
 };
 
-// Update badge when switching tabs
 chrome.tabs.onActivated.addListener(({ tabId }) => updateBadgeForTab(tabId));
 
-// Update badge when a tab finishes loading (URL may have changed)
 chrome.tabs.onUpdated.addListener((tabId, info) => {
-    if (info.status === 'complete') updateBadgeForTab(tabId);
+  if (info.status === 'complete') updateBadgeForTab(tabId);
 });
 
-chrome.storage.onChanged.addListener((changes, namespace) => {
-    if (namespace === 'sync') updateAllTabs();
+chrome.storage.onChanged.addListener((_, namespace) => {
+  if (namespace === 'sync') updateAllTabs();
 });
 
 chrome.runtime.onStartup.addListener(updateAllTabs);
-
-// Set correct badge on every tab when extension is installed / reloaded
 chrome.runtime.onInstalled.addListener(updateAllTabs);
 
 updateAllTabs().catch(() => {});

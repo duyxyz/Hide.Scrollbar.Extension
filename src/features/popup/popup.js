@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
   const { applyI18n } = globalThis.ScrollHideI18n;
-  const { isWhitelisted, normalizeWhitelist, sanitizeDomain } = globalThis.ScrollHideWhitelist;
+  const { BACKUP_FILENAME } = globalThis.ScrollHideConstants;
+  const { openPanelForCurrentTab, getActiveTab } = globalThis.ScrollHideBrowserApi;
+  const { getSyncState, getSyncValue, setSyncValue } = globalThis.ScrollHideStorage;
+  const { isRestrictedUrl, isWhitelisted, normalizeWhitelist, sanitizeDomain } = globalThis.ScrollHideWhitelist;
   const toggle = document.getElementById('toggleScroll');
   const addCurrentBtn = document.getElementById('addCurrentBtn');
   const whitelistedNotice = document.getElementById('whitelistedNotice');
@@ -13,21 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let currentHostname = '';
   let isRestricted = false;
-
-  const RESTRICTED_PROTOCOLS = ['chrome:', 'chrome-extension:', 'edge:', 'about:', 'view-source:', 'devtools:'];
-  const RESTRICTED_HOSTS = ['chrome.google.com', 'chromewebstore.google.com'];
-
-  const checkRestricted = (url) => {
-    if (!url) return true;
-    try {
-      const parsed = new URL(url);
-      if (RESTRICTED_PROTOCOLS.includes(parsed.protocol)) return true;
-      if (RESTRICTED_HOSTS.includes(parsed.hostname)) return true;
-    } catch (_) {
-      return true;
-    }
-    return false;
-  };
 
   const applyRestrictedState = () => {
     toggle.classList.remove('active');
@@ -57,50 +45,48 @@ document.addEventListener('DOMContentLoaded', () => {
       toggle.style.opacity = '0.4';
       toggle.style.pointerEvents = 'none';
     } else {
-      chrome.storage.sync.get({ scrollbarHidden: true }, (data) => {
-        if (isRestricted) return;
-
-        toggle.classList.toggle('active', Boolean(data.scrollbarHidden));
-        toggle.disabled = false;
-        toggle.style.opacity = '1';
-        toggle.style.pointerEvents = 'auto';
-      });
+      getSyncValue({ scrollbarHidden: true })
+        .then((data) => {
+          if (isRestricted) return;
+          toggle.classList.toggle('active', Boolean(data.scrollbarHidden));
+          toggle.disabled = false;
+          toggle.style.opacity = '1';
+          toggle.style.pointerEvents = 'auto';
+        })
+        .catch(() => {});
     }
 
     addCurrentBtn.disabled = inList;
   };
 
   const loadState = () => {
-    chrome.storage.sync.get(
-      { scrollbarHidden: true, whitelist: [] },
-      (data) => {
-        if (chrome.runtime.lastError) return;
-
+    getSyncState()
+      .then((data) => {
         toggle.classList.toggle('active', !isRestricted && Boolean(data.scrollbarHidden));
         updateNotice(data.whitelist);
-      }
-    );
+      })
+      .catch(() => {});
   };
 
   const addDomain = (raw) => {
     const domain = sanitizeDomain(raw);
     if (!domain) return;
-    chrome.storage.sync.get({ whitelist: [] }, (data) => {
-      if (chrome.runtime.lastError) return;
-      if (data.whitelist.includes(domain)) return;
-      const newList = [...data.whitelist, domain].sort();
-      chrome.storage.sync.set({ whitelist: newList }, () => {
-        updateNotice(newList);
-      });
-    });
+
+    getSyncValue({ whitelist: [] })
+      .then((data) => {
+        if (data.whitelist.includes(domain)) return;
+        const newList = [...data.whitelist, domain].sort();
+        return setSyncValue({ whitelist: newList }).then(() => {
+          updateNotice(newList);
+        });
+      })
+      .catch(() => {});
   };
 
   toggle.addEventListener('click', () => {
     toggle.classList.toggle('active');
     const hidden = toggle.classList.contains('active');
-    chrome.storage.sync.set({ scrollbarHidden: hidden }, () => {
-      if (chrome.runtime.lastError) return;
-    });
+    setSyncValue({ scrollbarHidden: hidden }).catch(() => {});
   });
 
   addCurrentBtn.addEventListener('click', () => {
@@ -108,32 +94,24 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   toggleWhitelist.addEventListener('click', async () => {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (!tab) return;
-
-    if (chrome.sidePanel && chrome.sidePanel.open) {
-      await chrome.sidePanel.open({ tabId: tab.id });
-    } else if (typeof browser !== 'undefined' && browser.sidebarAction && browser.sidebarAction.open) {
-      await browser.sidebarAction.open();
-    } else if (chrome.sidebarAction && chrome.sidebarAction.open) {
-      await chrome.sidebarAction.open();
-    }
-
+    const opened = await openPanelForCurrentTab();
+    if (!opened) return;
     window.close();
   });
 
   exportBtn.addEventListener('click', () => {
-    chrome.storage.sync.get({ scrollbarHidden: true, whitelist: [] }, (data) => {
-      if (chrome.runtime.lastError) return;
-      const json = JSON.stringify(data, null, 2);
-      const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'scrollhide-backup.json';
-      a.click();
-      URL.revokeObjectURL(url);
-    });
+    getSyncState()
+      .then((data) => {
+        const json = JSON.stringify(data, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = BACKUP_FILENAME;
+        anchor.click();
+        URL.revokeObjectURL(url);
+      })
+      .catch(() => {});
   });
 
   importBtn.addEventListener('click', () => {
@@ -158,18 +136,18 @@ document.addEventListener('DOMContentLoaded', () => {
           nextState.scrollbarHidden = data.scrollbarHidden;
         }
 
-        chrome.storage.sync.get({ whitelist: [] }, (current) => {
-          if (chrome.runtime.lastError) return;
-          const merged = normalizeWhitelist([
-            ...current.whitelist,
-            ...nextState.whitelist,
-          ]);
+        getSyncValue({ whitelist: [] })
+          .then((current) => {
+            const merged = normalizeWhitelist([
+              ...current.whitelist,
+              ...nextState.whitelist,
+            ]);
 
-          chrome.storage.sync.set({ ...nextState, whitelist: merged }, () => {
-            if (chrome.runtime.lastError) return;
-            loadState();
-          });
-        });
+            return setSyncValue({ ...nextState, whitelist: merged }).then(() => {
+              loadState();
+            });
+          })
+          .catch(() => {});
       } catch (_) {
         console.error('Invalid JSON');
       }
@@ -181,22 +159,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   applyI18n();
 
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const tabUrl = tabs[0]?.url || '';
-    isRestricted = checkRestricted(tabUrl);
+  getActiveTab()
+    .then((tab) => {
+      const tabUrl = tab?.url || '';
+      isRestricted = isRestrictedUrl(tabUrl);
 
-    if (!isRestricted && tabUrl) {
-      try {
-        currentHostname = new URL(tabUrl).hostname;
-      } catch (_) {
-        currentHostname = '';
+      if (!isRestricted && tabUrl) {
+        try {
+          currentHostname = new URL(tabUrl).hostname;
+        } catch (_) {
+          currentHostname = '';
+        }
       }
-    }
 
-    if (isRestricted) {
-      applyRestrictedState();
-    }
+      if (isRestricted) {
+        applyRestrictedState();
+      }
 
-    loadState();
-  });
+      loadState();
+    })
+    .catch(() => {
+      loadState();
+    });
 });

@@ -1,6 +1,7 @@
-// content.js — Injects CSS to hide scrollbars, respects whitelist
 (function () {
-  const STYLE_ID = 'hide-scrollbar-style';
+  const { STYLE_ID } = globalThis.ScrollHideConstants;
+  const { getLocalState } = globalThis.ScrollHideStorage;
+  const { isWhitelisted } = globalThis.ScrollHideWhitelist;
 
   const applyStyle = (hide) => {
     let style = document.getElementById(STYLE_ID);
@@ -10,19 +11,18 @@
       style.textContent = `
         ::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
         * { scrollbar-width: none !important; -ms-overflow-style: none !important; }
-        /* Custom scrollbars: Facebook, Spotify (OverlayScrollbars), SimpleBar, PerfectScrollbar */
         div[data-visualcompletion="ignore"][data-thumb="1"],
         .os-scrollbar,
         .simplebar-scrollbar,
         .simplebar-track,
         .ps__rail-x,
         .ps__rail-y,
-        .mac-scrollbar { 
-            display: none !important; 
-            visibility: hidden !important; 
-            opacity: 0 !important; 
-            width: 0 !important; 
-            height: 0 !important; 
+        .mac-scrollbar {
+          display: none !important;
+          visibility: hidden !important;
+          opacity: 0 !important;
+          width: 0 !important;
+          height: 0 !important;
         }
       `;
       (document.head || document.documentElement).appendChild(style);
@@ -31,32 +31,20 @@
     }
   };
 
-  const isWhitelisted = (whitelist) => {
-    const hostname = window.location.hostname;
-    
-    // Exact match using Set for O(1) lookup
-    const whitelistSet = new Set(whitelist);
-    if (whitelistSet.has(hostname)) return true;
-    
-    // Suffix match for subdomains
-    return whitelist.some(domain => hostname.endsWith('.' + domain));
+  const update = async () => {
+    try {
+      const state = await getLocalState();
+      applyStyle(state.scrollbarHidden && !isWhitelisted(window.location.hostname, state.whitelist));
+    } catch (_) {
+      return;
+    }
   };
 
-  const update = () => {
-    chrome.storage.local.get(
-      { scrollbarHidden: true, whitelist: [] },
-      (res) => {
-        if (chrome.runtime.lastError) return;
-        applyStyle(res.scrollbarHidden && !isWhitelisted(res.whitelist));
-      }
-    );
-  };
-
-  // Initial check
   update();
 
-  // React to storage changes in real-time
   chrome.storage.onChanged.addListener((changes, namespace) => {
-    if (namespace === 'local' && (changes.scrollbarHidden || changes.whitelist)) update();
+    if (namespace === 'local' && (changes.scrollbarHidden || changes.whitelist)) {
+      update();
+    }
   });
 })();

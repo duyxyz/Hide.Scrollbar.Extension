@@ -1,4 +1,6 @@
 (() => {
+  const { RESTRICTED_HOSTS, RESTRICTED_PROTOCOLS } = globalThis.ScrollHideConstants;
+
   const sanitizeDomain = (raw) =>
     String(raw)
       .trim()
@@ -22,7 +24,18 @@
     return whitelist.some((domain) => hostname.endsWith(`.${domain}`));
   };
 
+  const isRestrictedUrl = (url) => {
+    if (!url) return true;
+    try {
+      const parsed = new URL(url);
+      return RESTRICTED_PROTOCOLS.includes(parsed.protocol) || RESTRICTED_HOSTS.includes(parsed.hostname);
+    } catch (_) {
+      return true;
+    }
+  };
+
   globalThis.ScrollHideWhitelist = {
+    isRestrictedUrl,
     isWhitelisted,
     normalizeWhitelist,
     sanitizeDomain,

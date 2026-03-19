@@ -2,22 +2,22 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run: Refresh + Validate Test Builds",
+      "name": "Run: Verify",
       "type": "node-terminal",
       "request": "launch",
-      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}\\scripts\\refresh-and-validate-test-builds.ps1\""
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}\\scripts\\verify.ps1\""
     },
     {
-      "name": "Run: Refresh Test Builds",
+      "name": "Run: Build",
       "type": "node-terminal",
       "request": "launch",
-      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}\\scripts\\refresh-test-builds.ps1\""
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}\\scripts\\build.ps1\""
     },
     {
-      "name": "Run: Validate Test Builds",
+      "name": "Run: Check",
       "type": "node-terminal",
       "request": "launch",
-      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}\\scripts\\validate-test-builds.ps1\""
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}\\scripts\\check.ps1\""
     }
   ]
 }

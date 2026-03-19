@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Refresh Test Builds",
+      "label": "Build",
       "type": "shell",
       "command": "powershell",
       "args": [
@@ -10,7 +10,7 @@
         "-ExecutionPolicy",
         "Bypass",
         "-File",
-        "${workspaceFolder}\\scripts\\refresh-test-builds.ps1"
+        "${workspaceFolder}\\scripts\\build.ps1"
       ],
       "group": "build",
       "runOptions": {
@@ -24,7 +24,7 @@
       "problemMatcher": []
     },
     {
-      "label": "Refresh + Validate Test Builds",
+      "label": "Verify",
       "type": "shell",
       "command": "powershell",
       "args": [
@@ -32,7 +32,7 @@
         "-ExecutionPolicy",
         "Bypass",
         "-File",
-        "${workspaceFolder}\\scripts\\refresh-and-validate-test-builds.ps1"
+        "${workspaceFolder}\\scripts\\verify.ps1"
       ],
       "group": {
         "kind": "build",
@@ -46,7 +46,7 @@
       "problemMatcher": []
     },
     {
-      "label": "Validate Test Builds",
+      "label": "Check",
       "type": "shell",
       "command": "powershell",
       "args": [
@@ -54,7 +54,7 @@
         "-ExecutionPolicy",
         "Bypass",
         "-File",
-        "${workspaceFolder}\\scripts\\validate-test-builds.ps1"
+        "${workspaceFolder}\\scripts\\check.ps1"
       ],
       "group": "test",
       "presentation": {

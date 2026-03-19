@@ -34,6 +34,9 @@
   },
   "background": {
     "scripts": [
+      "src/shared/constants.js",
+      "src/shared/storage.js",
+      "src/features/whitelist/whitelist-service.js",
       "src/entries/background.js"
     ]
   },
@@ -43,6 +46,9 @@
         "<all_urls>"
       ],
       "js": [
+        "src/shared/constants.js",
+        "src/shared/storage.js",
+        "src/features/whitelist/whitelist-service.js",
         "src/entries/content.js"
       ],
       "run_at": "document_start"

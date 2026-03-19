@@ -1,6 +1,8 @@
 const textarea = document.getElementById('whitelistTextarea');
 const saveStatus = document.getElementById('saveStatus');
 const { applyI18n } = globalThis.ScrollHideI18n;
+const { DEFAULT_SYNC_STATE } = globalThis.ScrollHideConstants;
+const { getSyncState, setSyncValue } = globalThis.ScrollHideStorage;
 const { normalizeWhitelist, serializeDomains } = globalThis.ScrollHideWhitelist;
 
 let lastSavedValue = '';
@@ -21,39 +23,36 @@ const renderWhitelist = (domains) => {
 const save = () => {
   const draftDomains = normalizeWhitelist(textarea.value.split('\n'));
 
-  chrome.storage.sync.get({ whitelist: [] }, (data) => {
-    if (chrome.runtime.lastError) {
-      setSaveStatus(chrome.i18n.getMessage('error') || 'Error');
-      return;
-    }
+  getSyncState()
+    .then((data) => {
+      const remoteValue = serializeDomains(data.whitelist);
+      const nextDomains = remoteValue === lastKnownStorageValue
+        ? draftDomains
+        : normalizeWhitelist([...data.whitelist, ...draftDomains]);
 
-    const remoteValue = serializeDomains(data.whitelist);
-    const nextDomains = remoteValue === lastKnownStorageValue
-      ? draftDomains
-      : normalizeWhitelist([...data.whitelist, ...draftDomains]);
-
-    if (remoteValue !== lastKnownStorageValue) {
-      renderWhitelist(nextDomains);
-    }
-
-    chrome.storage.sync.set({ whitelist: nextDomains }, () => {
-      if (chrome.runtime.lastError) {
-        setSaveStatus(chrome.i18n.getMessage('error') || 'Error');
-        return;
+      if (remoteValue !== lastKnownStorageValue) {
+        renderWhitelist(nextDomains);
       }
-      lastSavedValue = serializeDomains(nextDomains);
-      lastKnownStorageValue = lastSavedValue;
-      setSaveStatus(chrome.i18n.getMessage('saved') || 'Saved');
-      setTimeout(() => setSaveStatus(''), 1500);
+
+      return setSyncValue({ whitelist: nextDomains }).then(() => {
+        lastSavedValue = serializeDomains(nextDomains);
+        lastKnownStorageValue = lastSavedValue;
+        setSaveStatus(chrome.i18n.getMessage('saved') || 'Saved');
+        setTimeout(() => setSaveStatus(''), 1500);
+      });
+    })
+    .catch(() => {
+      setSaveStatus(chrome.i18n.getMessage('error') || 'Error');
     });
-  });
 };
 
-chrome.storage.sync.get({ whitelist: [] }, (data) => {
-  if (!chrome.runtime.lastError) {
+getSyncState()
+  .then((data) => {
     renderWhitelist(data.whitelist);
-  }
-});
+  })
+  .catch(() => {
+    renderWhitelist(DEFAULT_SYNC_STATE.whitelist);
+  });
 
 let saveTimer;
 textarea.addEventListener('input', () => {

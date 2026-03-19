@@ -60,25 +60,25 @@ These test folders are ignored by Git and can be recreated at any time.
 
 The workspace includes Run/Task entries for development:
 
-- `Run: Refresh + Validate Test Builds`
-- `Run: Refresh Test Builds`
-- `Run: Validate Test Builds`
+- `Run: Verify`
+- `Run: Build`
+- `Run: Check`
 
 Recommended flow:
 
 1. Edit source files.
-2. Run `Refresh + Validate Test Builds`.
+2. Run `Verify`.
 3. Load unpacked extension from `test-builds/chromium` or `test-builds/firefox`.
 
 ## Scripts
 
-- `scripts/refresh-test-builds.ps1`
+- `scripts/build.ps1`
   Rebuilds both test folders from the current source.
 
-- `scripts/validate-test-builds.ps1`
+- `scripts/check.ps1`
   Checks that generated test builds contain the files referenced by each manifest.
 
-- `scripts/refresh-and-validate-test-builds.ps1`
+- `scripts/verify.ps1`
   Runs refresh first, then validation.
 
 ## Packaging
