@@ -1,15 +1,7 @@
 const textarea = document.getElementById('whitelistTextarea');
 const saveStatus = document.getElementById('saveStatus');
-
-const sanitizeDomain = (raw) =>
-  raw.trim().toLowerCase()
-    .replace(/^(https?:\/\/)?(www\.)?/, '')
-    .replace(/\/.*$/, '');
-
-const normalizeWhitelist = (domains) =>
-  [...new Set((domains || []).map(sanitizeDomain).filter((domain) => domain))].sort();
-
-const serializeDomains = (domains) => normalizeWhitelist(domains).join('\n');
+const { applyI18n } = globalThis.ScrollHideI18n;
+const { normalizeWhitelist, serializeDomains } = globalThis.ScrollHideWhitelist;
 
 let lastSavedValue = '';
 let lastKnownStorageValue = '';
@@ -31,7 +23,7 @@ const save = () => {
 
   chrome.storage.sync.get({ whitelist: [] }, (data) => {
     if (chrome.runtime.lastError) {
-      setSaveStatus(chrome.i18n.getMessage("error") || 'Error');
+      setSaveStatus(chrome.i18n.getMessage('error') || 'Error');
       return;
     }
 
@@ -46,30 +38,28 @@ const save = () => {
 
     chrome.storage.sync.set({ whitelist: nextDomains }, () => {
       if (chrome.runtime.lastError) {
-        setSaveStatus(chrome.i18n.getMessage("error") || 'Error');
+        setSaveStatus(chrome.i18n.getMessage('error') || 'Error');
         return;
       }
       lastSavedValue = serializeDomains(nextDomains);
       lastKnownStorageValue = lastSavedValue;
-      setSaveStatus(chrome.i18n.getMessage("saved") || 'Saved');
+      setSaveStatus(chrome.i18n.getMessage('saved') || 'Saved');
       setTimeout(() => setSaveStatus(''), 1500);
     });
   });
 };
 
-// Load
 chrome.storage.sync.get({ whitelist: [] }, (data) => {
   if (!chrome.runtime.lastError) {
     renderWhitelist(data.whitelist);
   }
 });
 
-// Save on input
-let t;
+let saveTimer;
 textarea.addEventListener('input', () => {
-  setSaveStatus(chrome.i18n.getMessage("saving") || 'Saving...');
-  clearTimeout(t);
-  t = setTimeout(save, 500);
+  setSaveStatus(chrome.i18n.getMessage('saving') || 'Saving...');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(save, 500);
 });
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
@@ -84,14 +74,4 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
   }
 });
 
-// Init Localization
-document.querySelectorAll('[data-i18n]').forEach((el) => {
-  const msg = chrome.i18n.getMessage(el.getAttribute('data-i18n'));
-  if (msg) {
-    if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
-      el.placeholder = msg;
-    } else {
-      el.textContent = msg;
-    }
-  }
-});
+applyI18n();

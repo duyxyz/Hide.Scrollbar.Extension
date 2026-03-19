@@ -14,16 +14,16 @@
     "sidePanel"
   ],
   "action": {
-    "default_popup": "src/popup/index.html",
+    "default_popup": "src/features/popup/popup.html",
     "default_icon": {
       "48": "assets/icons/icon48.png"
     }
   },
   "side_panel": {
-    "default_path": "src/sidepanel/index.html"
+    "default_path": "src/features/sidepanel/sidepanel.html"
   },
   "background": {
-    "service_worker": "src/background/index.js"
+    "service_worker": "src/entries/background.js"
   },
   "content_scripts": [
     {
@@ -31,7 +31,7 @@
         "<all_urls>"
       ],
       "js": [
-        "src/content/index.js"
+        "src/entries/content.js"
       ],
       "run_at": "document_start"
     }

@@ -5,9 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ScrollHide</title>
-  <link rel="stylesheet" href="../../assets/styles/base.css">
-  <link rel="stylesheet" href="../../assets/styles/header.css">
-  <link rel="stylesheet" href="../../assets/styles/notices.css">
+  <link rel="stylesheet" href="../../../assets/styles/tokens.css">
+  <link rel="stylesheet" href="../../../assets/styles/popup.css">
 </head>
 
 <body>
@@ -35,7 +34,8 @@
     </button>
 
     <button id="exportBtn" class="control-btn" title="Export data">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
         <polyline points="17 8 12 3 7 8"></polyline>
         <line x1="12" y1="3" x2="12" y2="15"></line>
@@ -43,7 +43,8 @@
     </button>
 
     <button id="importBtn" class="control-btn" title="Import data">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
         <polyline points="7 10 12 15 17 10"></polyline>
         <line x1="12" y1="15" x2="12" y2="3"></line>
@@ -68,7 +69,9 @@
     This site is in the exception list
   </div>
 
-  <script src="index.js"></script>
+  <script src="../../shared/i18n.js"></script>
+  <script src="../whitelist/whitelist-service.js"></script>
+  <script src="popup.js"></script>
 </body>
 
 </html>
