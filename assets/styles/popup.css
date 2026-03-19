@@ -1,0 +1,75 @@
+/* Top Bar (Domain Name) */
+.top-bar {
+    text-align: center;
+    padding: 10px;
+    background: var(--secondary-bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 44px;
+}
+
+.domain-display {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    word-break: break-all;
+    line-height: normal;
+}
+
+/* Big Power Button Section */
+.main-power-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    padding: 10px 0;
+    position: relative;
+    overflow: hidden;
+    min-height: 140px;
+}
+
+.power-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.power-btn.active {
+    color: #2772ed;
+}
+
+/* Bottom Controls */
+.bottom-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    background: var(--secondary-bg);
+    height: 44px;
+}
+
+.control-btn {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    padding: 2px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.control-btn.active {
+    color: var(--accent);
+}
+
+.control-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+}

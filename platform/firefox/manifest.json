@@ -16,25 +16,25 @@
     }
   },
   "icons": {
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
   },
   "permissions": [
     "storage",
     "tabs"
   ],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "src/popup/index.html",
     "default_icon": {
-      "48": "icons/icon48.png"
+      "48": "assets/icons/icon48.png"
     }
   },
   "sidebar_action": {
-    "default_panel": "sidepanel.html"
+    "default_panel": "src/sidepanel/index.html"
   },
   "background": {
     "scripts": [
-      "background.js"
+      "src/background/index.js"
     ]
   },
   "content_scripts": [
@@ -43,7 +43,7 @@
         "<all_urls>"
       ],
       "js": [
-        "content.js"
+        "src/content/index.js"
       ],
       "run_at": "document_start"
     }
