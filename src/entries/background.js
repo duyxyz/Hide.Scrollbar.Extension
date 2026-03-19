@@ -56,7 +56,9 @@ const updateAllTabs = async () => {
 chrome.tabs.onActivated.addListener(({ tabId }) => updateBadgeForTab(tabId));
 
 chrome.tabs.onUpdated.addListener((tabId, info) => {
-  if (info.status === 'complete') updateBadgeForTab(tabId);
+  if (info.status === 'loading' || info.status === 'complete' || info.url) {
+    updateBadgeForTab(tabId);
+  }
 });
 
 chrome.storage.onChanged.addListener((_, namespace) => {
