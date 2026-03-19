@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const { isRestrictedUrl, isWhitelisted, normalizeWhitelist, sanitizeDomain } = globalThis.ScrollHideWhitelist;
   const toggle = document.getElementById('toggleScroll');
   const addCurrentBtn = document.getElementById('addCurrentBtn');
+  const addCurrentVertical = document.getElementById('addCurrentVertical');
   const whitelistedNotice = document.getElementById('whitelistedNotice');
   const restrictedNotice = document.getElementById('restrictedNotice');
   const toggleWhitelist = document.getElementById('toggleWhitelist');
@@ -26,11 +27,21 @@ document.addEventListener('DOMContentLoaded', () => {
     addCurrentBtn.disabled = true;
   };
 
+  const updateAddButtonState = (inList) => {
+    addCurrentVertical.style.display = inList ? 'none' : 'block';
+    addCurrentBtn.setAttribute(
+      'aria-label',
+      inList ? 'Remove site from whitelist' : 'Add site to whitelist'
+    );
+    addCurrentBtn.title = inList ? 'Remove site from whitelist' : 'Add site to whitelist';
+  };
+
   const updateNotice = (whitelist) => {
     if (!currentHostname) {
       whitelistedNotice.style.display = 'none';
       domainDisplay.textContent = chrome.i18n.getMessage('cantAddPage') || 'Invalid Page';
       addCurrentBtn.disabled = true;
+      updateAddButtonState(false);
       return;
     }
 
@@ -38,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const inList = isWhitelisted(currentHostname, whitelist);
     whitelistedNotice.style.display = inList ? 'block' : 'none';
+    updateAddButtonState(inList);
 
     if (inList || isRestricted) {
       toggle.classList.remove('active');
@@ -56,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(() => {});
     }
 
-    addCurrentBtn.disabled = inList;
+    addCurrentBtn.disabled = false;
   };
 
   const loadState = () => {
@@ -83,6 +95,20 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(() => {});
   };
 
+  const removeDomain = (raw) => {
+    const domain = sanitizeDomain(raw);
+    if (!domain) return;
+
+    getSyncValue({ whitelist: [] })
+      .then((data) => {
+        const newList = data.whitelist.filter((item) => item !== domain);
+        return setSyncValue({ whitelist: newList }).then(() => {
+          updateNotice(newList);
+        });
+      })
+      .catch(() => {});
+  };
+
   toggle.addEventListener('click', () => {
     toggle.classList.toggle('active');
     const hidden = toggle.classList.contains('active');
@@ -90,7 +116,17 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   addCurrentBtn.addEventListener('click', () => {
-    if (currentHostname) addDomain(currentHostname);
+    if (!currentHostname || isRestricted) return;
+
+    getSyncValue({ whitelist: [] })
+      .then((data) => {
+        if (isWhitelisted(currentHostname, data.whitelist)) {
+          removeDomain(currentHostname);
+        } else {
+          addDomain(currentHostname);
+        }
+      })
+      .catch(() => {});
   });
 
   toggleWhitelist.addEventListener('click', async () => {
