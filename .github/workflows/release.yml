@@ -31,14 +31,18 @@ jobs:
       - name: Create Zip Archives
         run: |
           cp platform/chromium/manifest.json manifest.json
-          zip -r extension-chrome-v${{ env.VERSION }}.zip . -x "*.git*" "*.github*" "*.vscode*" "*.hintrc" "README.md" "tmp.json" "build.ps1" "platform/*" "*.zip"
+          cp src/shared/browser-api.chrome.js src/shared/browser-api.js
+          zip -r extension-chrome-v${{ env.VERSION }}.zip . -x "*.git*" "*.github*" "*.vscode*" "*.hintrc" "README.md" "tmp.json" "scripts/*" "platform/*" "*.zip" "src/shared/browser-api.chrome.js" "src/shared/browser-api.firefox.js" "test-builds/*"
 
           rm manifest.json
+          rm src/shared/browser-api.js
 
           cp platform/firefox/manifest.json manifest.json
-          zip -r extension-firefox-v${{ env.VERSION }}.zip . -x "*.git*" "*.github*" "*.vscode*" "*.hintrc" "README.md" "tmp.json" "build.ps1" "platform/*" "*.zip"
+          cp src/shared/browser-api.firefox.js src/shared/browser-api.js
+          zip -r extension-firefox-v${{ env.VERSION }}.zip . -x "*.git*" "*.github*" "*.vscode*" "*.hintrc" "README.md" "tmp.json" "scripts/*" "platform/*" "*.zip" "src/shared/browser-api.chrome.js" "src/shared/browser-api.firefox.js" "test-builds/*"
 
           rm manifest.json
+          rm src/shared/browser-api.js
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
