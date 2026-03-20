@@ -36,6 +36,14 @@ foreach ($target in $targets) {
   }
 
   Copy-Item -Path $target.Manifest -Destination (Join-Path $destination 'manifest.json')
+
+  if ($target.Name -eq 'chromium') {
+    Rename-Item -Path (Join-Path $destination 'src\shared\browser-api.chrome.js') -NewName 'browser-api.js'
+    Remove-Item -Path (Join-Path $destination 'src\shared\browser-api.firefox.js') -Force -ErrorAction SilentlyContinue
+  } elseif ($target.Name -eq 'firefox') {
+    Rename-Item -Path (Join-Path $destination 'src\shared\browser-api.firefox.js') -NewName 'browser-api.js'
+    Remove-Item -Path (Join-Path $destination 'src\shared\browser-api.chrome.js') -Force -ErrorAction SilentlyContinue
+  }
 }
 
 Write-Host 'Test builds refreshed:'

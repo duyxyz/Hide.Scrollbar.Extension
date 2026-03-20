@@ -5,11 +5,6 @@
   };
 
   const openPanelForCurrentTab = async () => {
-    if (typeof browser !== 'undefined' && browser.sidebarAction && browser.sidebarAction.open) {
-      await browser.sidebarAction.open();
-      return true;
-    }
-
     if (chrome.sidebarAction && chrome.sidebarAction.open) {
       await chrome.sidebarAction.open();
       return true;
