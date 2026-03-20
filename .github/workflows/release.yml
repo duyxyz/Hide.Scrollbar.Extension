@@ -52,3 +52,14 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Keep only 5 most recent releases and tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tags=$(gh api repos/${{ github.repository }}/releases -F per_page=100 --jq '.[5:] | .[].tag_name')
+          for tag in $tags; do
+            echo "Deleting release and tag: $tag"
+            gh release delete "$tag" --cleanup-tag -y || true
+          done
+
