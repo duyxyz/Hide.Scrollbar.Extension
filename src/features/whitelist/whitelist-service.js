@@ -17,10 +17,16 @@
 
   const serializeDomains = (domains) => normalizeWhitelist(domains).join('\n');
 
+  let cachedWhitelist = null;
+  let cachedSet = new Set();
+
   const isWhitelisted = (hostname, whitelist) => {
     if (!hostname) return false;
-    const whitelistSet = new Set(whitelist);
-    return whitelistSet.has(hostname);
+    if (whitelist !== cachedWhitelist) {
+      cachedWhitelist = whitelist;
+      cachedSet = new Set(whitelist);
+    }
+    return cachedSet.has(hostname);
   };
 
   const isRestrictedUrl = (url) => {
