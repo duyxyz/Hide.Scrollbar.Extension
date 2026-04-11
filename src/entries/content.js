@@ -1,6 +1,8 @@
 (function () {
+  if (globalThis.__ScrollHideInitialized__) return;
+  globalThis.__ScrollHideInitialized__ = true;
   const { STYLE_ID } = globalThis.ScrollHideConstants;
-  const { getLocalState } = globalThis.ScrollHideStorage;
+  const { getSyncState } = globalThis.ScrollHideStorage;
   const { isWhitelisted } = globalThis.ScrollHideWhitelist;
 
   const applyStyle = (hide) => {
@@ -33,10 +35,10 @@
 
   const update = async () => {
     try {
-      const state = await getLocalState();
+      const state = await getSyncState();
       applyStyle(state.scrollbarHidden && !isWhitelisted(window.location.hostname, state.whitelist));
     } catch (err) {
-      console.error('[Content] State update local cache failed', { error: err });
+      console.error('[Content] Failed to read sync state', { error: err });
       return;
     }
   };
@@ -44,8 +46,24 @@
   update();
 
   chrome.storage.onChanged.addListener((changes, namespace) => {
-    if (namespace === 'local' && (changes.scrollbarHidden || changes.whitelist)) {
+    if (namespace === 'sync' && (changes.scrollbarHidden || changes.whitelist)) {
       update();
     }
   });
+
+  const cleanupOrphanedContext = () => {
+    if (!chrome.runtime?.id) {
+      applyStyle(false);
+      globalThis.__ScrollHideInitialized__ = false;
+      document.removeEventListener('mousemove', cleanupOrphanedContext);
+      document.removeEventListener('scroll', cleanupOrphanedContext);
+      document.removeEventListener('keydown', cleanupOrphanedContext);
+      document.removeEventListener('click', cleanupOrphanedContext);
+    }
+  };
+
+  document.addEventListener('mousemove', cleanupOrphanedContext, { passive: true });
+  document.addEventListener('scroll', cleanupOrphanedContext, { passive: true });
+  document.addEventListener('keydown', cleanupOrphanedContext, { passive: true });
+  document.addEventListener('click', cleanupOrphanedContext, { passive: true });
 })();

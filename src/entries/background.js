@@ -7,7 +7,7 @@ if (typeof importScripts === 'function') {
 }
 
 const { BADGE_ACTIVE_COLOR, BADGE_INACTIVE_COLOR } = globalThis.ScrollHideConstants;
-const { getSyncState, syncLocalCache } = globalThis.ScrollHideStorage;
+const { getSyncState } = globalThis.ScrollHideStorage;
 const { isRestrictedUrl, isWhitelisted } = globalThis.ScrollHideWhitelist;
 
 const updateBadge = async (tabId, scrollbarHidden, whitelist) => {
@@ -46,10 +46,23 @@ const updateBadgeForTab = async (tabId) => {
 
 const updateAllTabs = async () => {
   const { scrollbarHidden, whitelist } = await getSyncState();
-  await syncLocalCache({ scrollbarHidden, whitelist });
 
   chrome.tabs.query({}, (tabs) => {
-    tabs.forEach((tab) => updateBadge(tab.id, scrollbarHidden, whitelist));
+    tabs.forEach((tab) => {
+      updateBadge(tab.id, scrollbarHidden, whitelist);
+      
+      if (tab.url && !isRestrictedUrl(tab.url) && chrome.scripting) {
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          files: [
+            "src/shared/constants.js",
+            "src/shared/storage.js",
+            "src/features/whitelist/whitelist-service.js",
+            "src/entries/content.js"
+          ]
+        }).catch(() => {});
+      }
+    });
   });
 };
 
