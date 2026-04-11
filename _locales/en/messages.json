@@ -1,49 +1,49 @@
 {
-    "extName":  {
-                    "message":  "Hide Scrollbar",
-                    "description":  "Name of the extension"
-                },
-    "extDesc":  {
-                    "message":  "Automatically hides scrollbars on websites for a cleaner, immersive interface. Includes a global toggle, per-site whitelist, and a side panel for easy management.",
-                    "description":  "Description of the extension"
-                },
-    "restrictedNotice":  {
-                             "message":  "Restricted page"
-                         },
-    "whitelistedNotice":  {
-                              "message":  "In exception list"
-                          },
-    "cantAddPage":  {
-                        "message":  "Invalid page"
-                    },
-    "exceptionsTitle":  {
-                            "message":  "Exceptions"
-                        },
-    "domainPlaceholder":  {
-                              "message":  "https://www.example.com/"
-                          },
-    "saving":  {
-                   "message":  "Saving..."
-               },
-    "saved":  {
-                  "message":  "Saved"
-              },
-    "error":  {
-                  "message":  "Error"
-              },
-    "addCurrentHost":  {
-                           "message":  "Add site to whitelist"
-                       },
-    "removeCurrentHost":  {
-                              "message":  "Remove site from whitelist"
-                          },
-    "exportData":  {
-                       "message":  "Export data"
-                   },
-    "importData":  {
-                       "message":  "Import data"
-                   },
-    "openExceptions":  {
-                           "message":  "Open exceptions"
-                       }
+    "extName": {
+        "message": "Hide Scrollbar",
+        "description": "Name of the extension"
+    },
+    "extDesc": {
+        "message": "Automatically hides scrollbars for a cleaner interface. Supports whitelist and toggle.",
+        "description": "Description of the extension"
+    },
+    "restrictedNotice": {
+        "message": "Restricted page"
+    },
+    "whitelistedNotice": {
+        "message": "In exception list"
+    },
+    "cantAddPage": {
+        "message": "Invalid page"
+    },
+    "exceptionsTitle": {
+        "message": "Exceptions"
+    },
+    "domainPlaceholder": {
+        "message": "https://www.example.com/"
+    },
+    "saving": {
+        "message": "Saving..."
+    },
+    "saved": {
+        "message": "Saved"
+    },
+    "error": {
+        "message": "Error"
+    },
+    "addCurrentHost": {
+        "message": "Add site to whitelist"
+    },
+    "removeCurrentHost": {
+        "message": "Remove site from whitelist"
+    },
+    "exportData": {
+        "message": "Export data"
+    },
+    "importData": {
+        "message": "Import data"
+    },
+    "openExceptions": {
+        "message": "Open exceptions"
+    }
 }
