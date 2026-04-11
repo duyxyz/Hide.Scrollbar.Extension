@@ -68,4 +68,6 @@ chrome.storage.onChanged.addListener((_, namespace) => {
 chrome.runtime.onStartup.addListener(updateAllTabs);
 chrome.runtime.onInstalled.addListener(updateAllTabs);
 
-updateAllTabs().catch(() => {});
+updateAllTabs().catch((err) => {
+  console.error('[Background] Startup updateAllTabs execution failed', { error: err });
+});

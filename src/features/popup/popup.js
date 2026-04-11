@@ -64,7 +64,9 @@ document.addEventListener('DOMContentLoaded', () => {
           toggle.style.opacity = '1';
           toggle.style.pointerEvents = 'auto';
         })
-        .catch(() => {});
+        .catch((err) => {
+          console.error('[Popup] getSyncValue failed', { context: 'updateNotice', error: err });
+        });
     }
 
     addCurrentBtn.disabled = false;
@@ -76,7 +78,9 @@ document.addEventListener('DOMContentLoaded', () => {
         toggle.classList.toggle('active', !isRestricted && Boolean(data.scrollbarHidden));
         updateNotice(data.whitelist);
       })
-      .catch(() => {});
+      .catch((err) => {
+        console.error('[Popup] getSyncState failed', { context: 'loadState', error: err });
+      });
   };
 
   const addDomain = (raw) => {
@@ -91,7 +95,9 @@ document.addEventListener('DOMContentLoaded', () => {
           updateNotice(newList);
         });
       })
-      .catch(() => {});
+      .catch((err) => {
+        console.error('[Popup] Failed to add domain', { domain, error: err });
+      });
   };
 
   const removeDomain = (raw) => {
@@ -105,13 +111,17 @@ document.addEventListener('DOMContentLoaded', () => {
           updateNotice(newList);
         });
       })
-      .catch(() => {});
+      .catch((err) => {
+        console.error('[Popup] Failed to remove domain', { domain, error: err });
+      });
   };
 
   toggle.addEventListener('click', () => {
     toggle.classList.toggle('active');
     const hidden = toggle.classList.contains('active');
-    setSyncValue({ scrollbarHidden: hidden }).catch(() => {});
+    setSyncValue({ scrollbarHidden: hidden }).catch((err) => {
+      console.error('[Popup] Failed to toggle scrollbar state', { hidden, error: err });
+    });
   });
 
   addCurrentBtn.addEventListener('click', () => {
@@ -125,7 +135,9 @@ document.addEventListener('DOMContentLoaded', () => {
           addDomain(currentHostname);
         }
       })
-      .catch(() => {});
+      .catch((err) => {
+        console.error('[Popup] Failed to toggle domain whitelist', { currentHostname, error: err });
+      });
   });
 
   toggleWhitelist.addEventListener('click', async () => {
@@ -146,7 +158,9 @@ document.addEventListener('DOMContentLoaded', () => {
         anchor.click();
         URL.revokeObjectURL(url);
       })
-      .catch(() => {});
+      .catch((err) => {
+        console.error('[Popup] Failed to export backup', { error: err });
+      });
   });
 
   importBtn.addEventListener('click', () => {
@@ -182,9 +196,12 @@ document.addEventListener('DOMContentLoaded', () => {
               loadState();
             });
           })
-          .catch(() => {});
-      } catch (_) {
-        console.error('Invalid JSON');
+          .catch((err) => {
+            console.error('[Popup] Failed to merge imported whitelist', { error: err });
+          });
+      } catch (err) {
+        console.error('[Popup] Invalid JSON during import', { fileName: file.name, error: err });
+        alert(chrome.i18n.getMessage('error') || 'Lỗi: Tệp tin không hợp lệ!');
       }
     };
 
@@ -213,7 +230,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       loadState();
     })
-    .catch(() => {
+    .catch((err) => {
+      console.error('[Popup] getActiveTab failed', { error: err });
       loadState();
     });
 });

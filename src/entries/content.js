@@ -35,7 +35,8 @@
     try {
       const state = await getLocalState();
       applyStyle(state.scrollbarHidden && !isWhitelisted(window.location.hostname, state.whitelist));
-    } catch (_) {
+    } catch (err) {
+      console.error('[Content] State update local cache failed', { error: err });
       return;
     }
   };
