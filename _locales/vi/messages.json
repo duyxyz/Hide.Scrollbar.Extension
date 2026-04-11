@@ -4,7 +4,7 @@
                     "description":  "Name of the extension"
                 },
     "extDesc":  {
-                    "message":  "Tự động ẩn thanh cuộn trên hầu hết các trang web để có giao diện gọn gàng hơn. Bao gồm nút bật/tắt và danh sách ngoại lệ.",
+                    "message":  "Tự động ẩn thanh cuộn trên các trang web để có giao diện gọn gàng và tập trung hơn. Hỗ trợ nút bật/tắt, danh sách ngoại lệ và thanh bên quản lý tiện lợi.",
                     "description":  "Description of the extension"
                 },
     "restrictedNotice":  {

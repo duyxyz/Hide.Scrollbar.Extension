@@ -4,7 +4,7 @@
                     "description":  "Name of the extension"
                 },
     "extDesc":  {
-                    "message":  "Automatically hides the scrollbar on most websites for a cleaner interface, with toggle and whitelist support.",
+                    "message":  "Automatically hides scrollbars on websites for a cleaner, immersive interface. Includes a global toggle, per-site whitelist, and a side panel for easy management.",
                     "description":  "Description of the extension"
                 },
     "restrictedNotice":  {
