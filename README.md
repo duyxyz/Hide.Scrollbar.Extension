@@ -2,7 +2,7 @@
 
 | Icon | Store |
 | :---: | :---: |
-| <img src="assets/icons/icon128.png" width="48" height="48"> | [**Add**](https://chromewebstore.google.com/detail/gngenlhkmpneoiicndbjghjhpogdcncl?utm_source=item-share-cb) |
+| <img src="assets/icons/icon128.png" width="48" height="48"> | [![Chrome Web Store](https://www.google.com/s2/favicons?sz=64&domain=chromewebstore.google.com)](https://chromewebstore.google.com/detail/gngenlhkmpneoiicndbjghjhpogdcncl?utm_source=item-share-cb) |
 
 
 A browser extension to hide scrollbars for a cleaner interface, while keeping scrolling functionality intact.
