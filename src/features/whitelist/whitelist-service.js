@@ -6,7 +6,7 @@
       .trim()
       .toLowerCase()
       .replace(/^(https?:\/\/)?/, '')
-      .replace(/\/.*$/, '');
+      .replace(/[/?#].*$/, '');
 
   const normalizeWhitelist = (domains) =>
     [...new Set(
